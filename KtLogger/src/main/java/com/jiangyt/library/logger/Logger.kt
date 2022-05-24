@@ -64,6 +64,8 @@ import com.jiangyt.library.logger.helper.LogHelper
  */
 object Logger {
 
+    internal const val DEF_TAG = "Logger"
+
     private var helper: Helper = LogHelper()
 
     fun setHelper(helper: Helper) {

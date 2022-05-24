@@ -1,6 +1,7 @@
 package com.jiangyt.library.logger.helper
 
 import com.jiangyt.library.logger.LogLevel
+import com.jiangyt.library.logger.Logger
 import com.jiangyt.library.logger.Utils
 import com.jiangyt.library.logger.adapter.LogAdapter
 import org.json.JSONArray
@@ -138,10 +139,11 @@ internal class LogHelper : Helper {
         if (Utils.isEmpty(message)) {
             message = "Empty/NULL log message"
         }
+        val nTag = tag ?: Logger.DEF_TAG
 
         for (adapter in logAdapters) {
-            if (adapter.isLoggable(logLevel, tag!!)) {
-                adapter.log(logLevel, tag, message!!)
+            if (adapter.isLoggable(logLevel, nTag)) {
+                adapter.log(logLevel, nTag, message!!)
             }
         }
     }

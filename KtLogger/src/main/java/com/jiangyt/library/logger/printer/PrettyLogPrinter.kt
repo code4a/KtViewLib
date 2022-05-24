@@ -195,7 +195,7 @@ class PrettyLogPrinter constructor(builder: Builder) : Printer {
         internal var methodCount = 2
         internal var methodOffset = 0
         internal var showThreadInfo = true
-        internal var tag: String = "NT_TAG"
+        internal var tag = Logger.DEF_TAG
 
         fun methodCount(methodCount: Int): Builder {
             this.methodCount = methodCount

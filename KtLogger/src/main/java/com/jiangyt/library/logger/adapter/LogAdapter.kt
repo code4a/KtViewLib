@@ -18,7 +18,7 @@ interface LogAdapter {
      * @return is used to determine if log should printed.
      * If it is true, it will be printed, otherwise it'll be ignored.
      */
-    fun isLoggable(logLevel: Int, tag: String?): Boolean
+    fun isLoggable(logLevel: Int, tag: String): Boolean
 
     /**
      * Each log will use this pipeline

@@ -97,7 +97,7 @@ class FilePrinter constructor(builder: Builder) : Printer {
 
         private fun fillEmptyFields() {
             if (folderPath == null) {
-                val diskPath = Environment.getDownloadCacheDirectory().absolutePath
+                val diskPath = Environment.getExternalStorageDirectory().absolutePath
                 folderPath = diskPath + File.separatorChar + "logger"
             }
             if (fileNameGenerator == null) {

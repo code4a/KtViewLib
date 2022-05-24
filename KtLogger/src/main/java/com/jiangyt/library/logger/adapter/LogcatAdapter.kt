@@ -11,10 +11,10 @@ import com.jiangyt.library.logger.printer.Printer
  * @date 2022/5/24 5:17 下午
  * @version V1.0
  */
-class LogcatAdapter(private val printer: Printer = PrettyLogPrinter.newBuilder().build()) :
+open class LogcatAdapter(private val printer: Printer = PrettyLogPrinter.newBuilder().build()) :
     LogAdapter {
 
-    override fun isLoggable(logLevel: Int, tag: String?): Boolean {
+    override fun isLoggable(logLevel: Int, tag: String): Boolean {
         return true
     }
 

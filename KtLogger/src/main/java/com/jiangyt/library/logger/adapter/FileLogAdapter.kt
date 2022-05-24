@@ -1,5 +1,7 @@
 package com.jiangyt.library.logger.adapter
 
+import android.Manifest.permission
+import androidx.annotation.RequiresPermission
 import com.jiangyt.library.logger.printer.FilePrinter
 import com.jiangyt.library.logger.printer.Printer
 
@@ -14,10 +16,11 @@ import com.jiangyt.library.logger.printer.Printer
 class FileLogAdapter(
     private val printer: Printer = FilePrinter.newBuilder().build()
 ) : LogAdapter {
-    override fun isLoggable(logLevel: Int, tag: String?): Boolean {
+    override fun isLoggable(logLevel: Int, tag: String): Boolean {
         return true
     }
 
+    @RequiresPermission(anyOf = [permission.ACCESS_COARSE_LOCATION, permission.ACCESS_FINE_LOCATION])
     override fun log(logLevel: Int, tag: String, msg: String) {
         printer.println(logLevel, tag, msg)
     }
