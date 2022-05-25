@@ -29,6 +29,6 @@ class DateFileNameGenerator : FileNameGenerator {
     override fun generateFileName(logLevel: Int, timestamp: Long): String {
         val sdf = mLocalDateFormat.get()
         sdf.timeZone = TimeZone.getDefault()
-        return sdf.format(Date(timestamp))
+        return String.format("log_%s.log", sdf.format(Date(timestamp)))
     }
 }

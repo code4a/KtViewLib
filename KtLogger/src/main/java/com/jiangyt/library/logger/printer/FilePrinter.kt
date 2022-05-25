@@ -1,5 +1,6 @@
 package com.jiangyt.library.logger.printer
 
+import android.os.Build
 import android.os.Environment
 import android.util.Log
 import com.jiangyt.library.logger.clean.CleanStrategy
@@ -97,7 +98,8 @@ class FilePrinter constructor(builder: Builder) : Printer {
 
         private fun fillEmptyFields() {
             if (folderPath == null) {
-                val diskPath = Environment.getExternalStorageDirectory().absolutePath
+                val diskPath =
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
                 folderPath = diskPath + File.separatorChar + "logger"
             }
             if (fileNameGenerator == null) {

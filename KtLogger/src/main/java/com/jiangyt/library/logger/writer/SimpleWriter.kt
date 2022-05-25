@@ -13,7 +13,7 @@ import java.io.FileWriter
  * @date 2022/5/24 11:43 上午
  * @version V1.0
  */
-class SimpleWriter : Writer() {
+open class SimpleWriter : Writer() {
     /**
      * 打开的日志文件的名称。
      */
@@ -80,7 +80,7 @@ class SimpleWriter : Writer() {
      *
      * @param file 新创建的日志文件
      */
-    fun onNewFileCreated(file: File?) {}
+    open fun onNewFileCreated(file: File?) {}
 
     override fun appendLog(log: String) {
         bufferedWriter?.run {

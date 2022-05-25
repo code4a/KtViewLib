@@ -1,12 +1,16 @@
 package com.jiangyt.sample.ktview
 
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.jiangyt.library.logger.Logger
 import com.jiangyt.library.logger.adapter.FileLogAdapter
 import com.jiangyt.library.logger.adapter.LogcatAdapter
+import com.jiangyt.library.logger.printer.FilePrinter
 import com.jiangyt.library.logger.printer.PrettyLogPrinter
 import com.jiangyt.library.logger.printer.Printer
+import com.jiangyt.library.logger.writer.SimpleWriter
+import java.io.File
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -31,13 +35,40 @@ class MainActivity : AppCompatActivity() {
         Logger.addLogAdapter(LogcatAdapter(formatStrategy))
 
         Logger.addLogAdapter(object : LogcatAdapter() {
-            override fun isLoggable(logLevel: Int, tag: String?): Boolean {
+            override fun isLoggable(logLevel: Int, tag: String): Boolean {
                 return BuildConfig.DEBUG
             }
         })
 
-        Logger.addLogAdapter(FileLogAdapter())
 
+        val filePrinter: Printer = FilePrinter.newBuilder()
+//            .setFolderPath(
+//                File(externalCacheDir!!.absolutePath, "log").path
+//            ) // Specify the path to save log file
+            //.setFileNameGenerator(DateFileNameGenerator()) // Default: ChangelessFileNameGenerator("log")
+            // .backupStrategy(new MyBackupStrategy())             // Default: FileSizeBackupStrategy(1024 * 1024)
+            // .cleanStrategy(new FileLastModifiedCleanStrategy(MAX_TIME))     // Default: NeverCleanStrategy()
+            //.setFlattener(DefaultFlattener()) // Default: DefaultFlattener
+            .setWriter(object : SimpleWriter() {
+                // Default: SimpleWriter
+                override fun onNewFileCreated(file: File?) {
+                    val header = """
+             
+             >>>>>>>>>>>>>>>> File Header >>>>>>>>>>>>>>>>
+             Device Manufacturer: ${Build.MANUFACTURER}
+             Device Model       : ${Build.MODEL}
+             Android Version    : ${Build.VERSION.RELEASE}
+             Android SDK        : ${Build.VERSION.SDK_INT}
+             App VersionName    : ${BuildConfig.VERSION_NAME}
+             App VersionCode    : ${BuildConfig.VERSION_CODE}
+             <<<<<<<<<<<<<<<< File Header <<<<<<<<<<<<<<<<
+             
+             """.trimIndent()
+                    appendLog(header)
+                }
+            })
+            .build()
+        Logger.addLogAdapter(FileLogAdapter(filePrinter))
 
         Logger.w("no thread info and only 1 method")
 
@@ -48,6 +79,8 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         Logger.addLogAdapter(LogcatAdapter(formatStrategy))
+
+        Logger.addLogAdapter(FileLogAdapter())
         Logger.i("no thread info and method info")
 
         Logger.t("tag").e("Custom tag for only one use")
