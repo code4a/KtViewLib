@@ -94,6 +94,7 @@ internal object LogCrash {
                                     appendLog(header)
                                 }
                             })
+                            .setUseWorker(false)
                             .build()
 
                         setLastCrashTimestamp(application, Date().time)

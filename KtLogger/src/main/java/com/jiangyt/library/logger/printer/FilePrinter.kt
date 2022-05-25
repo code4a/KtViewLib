@@ -26,7 +26,6 @@ import java.util.concurrent.LinkedBlockingQueue
 class FilePrinter constructor(builder: Builder) : Printer {
 
     companion object {
-        private const val USE_WORKER = true
 
         /**
          * 默认3天
@@ -43,6 +42,7 @@ class FilePrinter constructor(builder: Builder) : Printer {
     private val cleanStrategy: CleanStrategy
     private val flattener: Flattener
     private val writer: Writer
+    private val useWorker: Boolean
 
     @Volatile
     private lateinit var worker: Worker
@@ -53,8 +53,9 @@ class FilePrinter constructor(builder: Builder) : Printer {
         cleanStrategy = builder.cleanStrategy!!
         flattener = builder.flattener!!
         writer = builder.writer!!
+        useWorker = builder.useWorker
 
-        if (USE_WORKER) {
+        if (useWorker) {
             worker = Worker()
         }
     }
@@ -66,6 +67,7 @@ class FilePrinter constructor(builder: Builder) : Printer {
         internal var cleanStrategy: CleanStrategy? = null
         internal var flattener: Flattener? = null
         internal var writer: Writer? = null
+        internal var useWorker: Boolean = true
 
         fun setFolderPath(folderPath: String): Builder {
             this.folderPath = folderPath
@@ -89,6 +91,11 @@ class FilePrinter constructor(builder: Builder) : Printer {
 
         fun setFlattener(flattener: Flattener): Builder {
             this.flattener = flattener
+            return this
+        }
+
+        fun setUseWorker(useWorker: Boolean): Builder {
+            this.useWorker = useWorker
             return this
         }
 
@@ -123,7 +130,7 @@ class FilePrinter constructor(builder: Builder) : Printer {
 
         val message = String.format("%s|%s", header, msg)
         val timeMillis = System.currentTimeMillis()
-        if (USE_WORKER) {
+        if (useWorker) {
             if (!worker.isStarted()) {
                 worker.start()
             }
