@@ -11,7 +11,7 @@ import java.util.*
  * @date 2022/5/24 2:31 下午
  * @version V1.0
  */
-class DateFileNameGenerator : FileNameGenerator {
+class DateFileNameGenerator(private val prefix: String = "log") : FileNameGenerator {
 
     private val mLocalDateFormat = object : ThreadLocal<SimpleDateFormat>() {
         override fun initialValue(): SimpleDateFormat {
@@ -29,6 +29,6 @@ class DateFileNameGenerator : FileNameGenerator {
     override fun generateFileName(logLevel: Int, timestamp: Long): String {
         val sdf = mLocalDateFormat.get()
         sdf.timeZone = TimeZone.getDefault()
-        return String.format("log_%s.log", sdf.format(Date(timestamp)))
+        return String.format("%s_%s.log", prefix, sdf.format(Date(timestamp)))
     }
 }

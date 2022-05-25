@@ -1,6 +1,6 @@
 package com.jiangyt.library.logger
 
-object LogLevel {
+internal object LogLevel {
 
     /**
      * Log level for NTLogger.v.

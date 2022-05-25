@@ -1,8 +1,13 @@
 package com.jiangyt.library.logger
 
+import android.content.Context
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
+import android.os.Build
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.net.UnknownHostException
+
 
 internal object Utils {
     /**
@@ -108,6 +113,34 @@ internal object Utils {
         return if (obj is Array<*>) {
             obj.contentDeepToString()
         } else "Couldn't find a correct type for the object"
+    }
+
+    /**
+     * 获取版本名称
+     */
+    fun getVersionName(context: Context): String {
+        return try {
+            val pi: PackageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+            pi.versionName
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+            "UnKnown"
+        }
+    }
+
+    /**
+     * 获取版本号
+     */
+    fun getVersionCode(context: Context): Long {
+        return try {
+            val pi: PackageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                pi.longVersionCode
+            } else pi.versionCode.toLong()
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+            0
+        }
     }
 }
 
