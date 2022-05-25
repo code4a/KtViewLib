@@ -115,10 +115,10 @@ internal object LogCrash {
                             errorMsgWriteToFile(stackTraceString, als)
                         } else {
                             Logger.d("不符合本应用的收集规则，使用原有的分发器处理异常信息")
-                            if (oldHandler != null) {
-                                oldHandler.uncaughtException(thread, throwable)
-                                return@setDefaultUncaughtExceptionHandler
-                            }
+                        }
+                        if (oldHandler != null) {
+                            oldHandler.uncaughtException(thread, throwable)
+                            return@setDefaultUncaughtExceptionHandler
                         }
                     }
 

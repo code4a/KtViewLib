@@ -11,6 +11,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+            Logger.e(throwable, thread.name)
+        }
+
         Logger.quickConfig(this, showLog = true, logToFile = true, crashCollect = true)
 
 //        Logger.addLogAdapter(LogcatAdapter())
