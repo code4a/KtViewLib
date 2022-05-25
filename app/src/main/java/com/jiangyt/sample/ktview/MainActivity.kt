@@ -11,12 +11,41 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val ueh1 = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
-            Logger.e(throwable, thread.name)
+            if (ueh1 == null) {
+                Logger.e(throwable, "test - 1 - $thread.name 原始处理器为空")
+            } else {
+                ueh1.uncaughtException(thread, throwable)
+            }
+            Logger.e(throwable, "test - 1 - $thread.name")
+        }
+
+        val ueh2 = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+            Logger.e(throwable, "test - 2 - $thread.name")
+            ueh2?.run {
+                uncaughtException(thread, throwable)
+            }
+        }
+
+        val ueh3 = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+            Logger.e(throwable, "test - 3 - $thread.name")
+            ueh3?.run {
+                uncaughtException(thread, throwable)
+            }
         }
 
         Logger.quickConfig(this, showLog = true, logToFile = true, crashCollect = true)
 
+        val ueh4 = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+            Logger.e(throwable, "test - 4 - $thread.name")
+            ueh4?.run {
+                uncaughtException(thread, throwable)
+            }
+        }
 //        Logger.addLogAdapter(LogcatAdapter())
         Logger.d("message")
 
