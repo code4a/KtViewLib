@@ -1,12 +1,13 @@
 package com.jiangyt.library.logger.printer
 
-import android.os.Build
 import android.os.Environment
 import android.util.Log
+import com.jiangyt.library.logger.Logger
 import com.jiangyt.library.logger.clean.CleanStrategy
 import com.jiangyt.library.logger.clean.FileLastModifiedCleanStrategy
 import com.jiangyt.library.logger.flattener.DefaultFlattener
 import com.jiangyt.library.logger.flattener.Flattener
+import com.jiangyt.library.logger.helper.LogHelper
 import com.jiangyt.library.logger.naming.DateFileNameGenerator
 import com.jiangyt.library.logger.naming.FileNameGenerator
 import com.jiangyt.library.logger.writer.SimpleWriter
@@ -118,14 +119,17 @@ class FilePrinter constructor(builder: Builder) : Printer {
     }
 
     override fun println(logLevel: Int, tag: String, msg: String) {
+        val header = getMsgHeader()
+
+        val message = String.format("%s|%s", header, msg)
         val timeMillis = System.currentTimeMillis()
         if (USE_WORKER) {
             if (!worker.isStarted()) {
                 worker.start()
             }
-            worker.enqueue(LogItem(timeMillis, logLevel, tag, msg))
+            worker.enqueue(LogItem(timeMillis, logLevel, tag, message))
         } else {
-            doPrintln(timeMillis, logLevel, tag, msg)
+            doPrintln(timeMillis, logLevel, tag, message)
         }
     }
 
@@ -170,6 +174,51 @@ class FilePrinter constructor(builder: Builder) : Printer {
                 file.delete()
             }
         }
+    }
+
+    private fun getMsgHeader(): String {
+        var methodCount = 1
+        val trace = Thread.currentThread().stackTrace
+        val stackOffset = getStackOffset(trace)
+        //corresponding method count with the current stack may exceeds the stack trace. Trims the count
+        if (methodCount + stackOffset > trace.size) {
+            methodCount = trace.size - stackOffset - 1
+        }
+        val builder = StringBuilder()
+        builder.append(Thread.currentThread().name)
+        for (i in methodCount downTo 1) {
+            val stackIndex = i + stackOffset
+            if (stackIndex >= trace.size) {
+                continue
+            }
+            builder.append("(")
+                .append(trace[stackIndex].fileName)
+                .append(".")
+                .append(trace[stackIndex].methodName)
+                .append(":")
+                .append(trace[stackIndex].lineNumber)
+                .append(")")
+        }
+        return builder.toString()
+    }
+
+    /**
+     * Determines the starting index of the stack trace, after method calls made by this class.
+     *
+     * @param trace the stack trace
+     * @return the stack offset
+     */
+    private fun getStackOffset(trace: Array<StackTraceElement>): Int {
+        var i = 5
+        while (i < trace.size) {
+            val e = trace[i]
+            val name = e.className
+            if (name != LogHelper::class.java.name && name != Logger::class.java.name) {
+                return --i
+            }
+            i++
+        }
+        return -1
     }
 
     private inner class Worker : Runnable {
