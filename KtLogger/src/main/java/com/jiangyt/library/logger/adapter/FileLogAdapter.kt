@@ -20,7 +20,7 @@ class FileLogAdapter(
         return true
     }
 
-    @RequiresPermission(anyOf = [permission.ACCESS_COARSE_LOCATION, permission.ACCESS_FINE_LOCATION])
+    @RequiresPermission(anyOf = [permission.READ_EXTERNAL_STORAGE, permission.WRITE_EXTERNAL_STORAGE])
     override fun log(logLevel: Int, tag: String, msg: String) {
         printer.println(logLevel, tag, msg)
     }

@@ -1,5 +1,6 @@
 package com.jiangyt.library.logger
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
@@ -8,6 +9,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.os.Process
+import androidx.annotation.RequiresPermission
 import com.jiangyt.library.logger.naming.DateFileNameGenerator
 import com.jiangyt.library.logger.printer.FilePrinter
 import com.jiangyt.library.logger.printer.Printer
@@ -42,6 +44,7 @@ internal object LogCrash {
     private lateinit var application: Application
     private lateinit var filePrinter: Printer
 
+    @RequiresPermission(anyOf = [Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE])
     fun install(context: Context, logRootPath: String) {
         try {
             val oldHandler = Thread.getDefaultUncaughtExceptionHandler()

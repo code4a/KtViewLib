@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.jiangyt.library.logger.Logger
+import com.jiangyt.library.logger.LoggerBox
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -37,7 +38,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        Logger.quickConfig(this, showLog = true, logToFile = true, crashCollect = true)
+        LoggerBox.quickConfig(this)
 
         val ueh4 = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
