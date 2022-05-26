@@ -1,9 +1,7 @@
 package com.jiangyt.library.logger
 
-import android.Manifest
 import android.content.Context
 import android.os.Build
-import androidx.annotation.RequiresPermission
 import com.jiangyt.library.logger.adapter.FileLogAdapter
 import com.jiangyt.library.logger.adapter.LogcatAdapter
 import com.jiangyt.library.logger.printer.FilePrinter
@@ -17,7 +15,6 @@ object LoggerBox {
     /**
      * 使用默认配置快速初始化，不使用当前方法时可以自行组合配置
      */
-    @RequiresPermission(anyOf = [Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE])
     fun quickConfig(
         context: Context,
         showLog: Boolean = true,
